@@ -1,0 +1,24 @@
+<idea-plugin>
+    <id>cn.codetector.tablegen-intellij</id>
+    <name>LLVM TableGen Language Support</name>
+    <vendor email="codetector@codetector.cn" url="https://codetector.cn">Codetector</vendor>
+
+    <description><![CDATA[
+    Simple plugin that adds support for tablegen (LLVM)
+    ]]></description>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
+
+    <extensions defaultExtensionNs="com.intellij">
+        <fileType name="TableGen File" implementationClass="tablegenintellij.plugin.TableGenFileType"
+        fieldName="INSTANCE" language="TableGen" extensions="td"/>
+    </extensions>
+
+    <actions>
+        <!-- Add your actions here -->
+    </actions>
+</idea-plugin>
