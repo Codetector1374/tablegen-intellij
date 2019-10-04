@@ -7,3 +7,6 @@ build
 *.iws
 
 gen/
+
+*.jar
+idea-flex.skeleton

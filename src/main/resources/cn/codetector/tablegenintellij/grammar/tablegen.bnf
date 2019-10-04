@@ -1,0 +1,111 @@
+{
+  parserClass="cn.codetector.tablegenintellij.parser.TableGenParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="TableGen"
+  psiImplClassSuffix="Impl"
+  psiPackage="cn.codetector.tablegenintellij.psi"
+  psiImplPackage="cn.codetector.tablegenintellij.psi.impl"
+
+  elementTypeHolderClass="cn.codetector.tablegenintellij.psi.TableGenTypes"
+  elementTypeClass="cn.codetector.tablegenintellij.psi.TableGenElementType"
+  tokenTypeClass="cn.codetector.tablegenintellij.psi.TableGenTokenType"
+
+  tokens = [
+    LINE_BREAK="regexp:[\r\n]"
+    WHITE_SPACE="regexp:\s+"
+
+    // Keywords
+    /*
+    bit   bits      class   code         dag
+    def   foreach   defm    field        in
+    int   let       list    multiclass   string
+    */
+    KeywordBit="bit"
+    KeywordBits="bits"
+    KeywordClass="class"
+    KeywordCode="code"
+    KeywordDag="dag"
+    KeywordDef="def"
+    KeywordForEach="foreach"
+    KeywordDefm="defm"
+    KeywordField="field"
+    KeywordIn="in"
+    KeywordInt="int"
+    KeywordLet="let"
+    KeywordList="list"
+    KeywordMultiClass="multiclass"
+    KeywordString="string"
+    KeywordInclude="include"
+
+    LINE_COMMENT="regexp://.*"
+    BLOCK_COMMENT="regexp:/\*(.|\n)*\*/"
+    IDENTIFIER="regexp:[0-9]*[a-zA-Z_]([a-zA-Z_]|[0-9])*"
+    VARNAME="regexp:[$][a-zA-Z_]([a-zA-Z_]|[0-9])*"
+
+    BIN_INT="regexp:0b[0-1]+"
+    HEX_INT="regexp:0x[0-9a-fA-F]+"
+    DEC_INT="regexp:[0-9]+"
+
+    STRING='regexp:"([^\n\r"]|\\n|\\")*"'
+  ]
+}
+
+tableGenFile ::= tbGenStmt*
+
+private tbGenStmt ::= !<<eof>> stmt | includeDirective
+
+binInt ::= BIN_INT
+integer ::= binInt | DEC_INT | HEX_INT
+
+value ::= simpleValue valueSuffix*
+valueSuffix ::=  '{' rangeList '}'
+               | '[' rangeList ']'
+               | '.' IDENTIFIER
+simpleValue ::= IDENTIFIER
+              | integer
+              | STRING
+              // TODO CodeFrag
+              | "?"
+              | "{" valueList "}"
+              | classID "<" valueListNE ">"
+              | "[" valueList "]" ("<" type ">")?
+              | "(" dagArg dagArgList? ")"
+              // TODO BANG Operator
+
+dagArg ::= value (":" VARNAME)? | VARNAME
+dagArgList ::= dagArg ("," dagArg)*
+
+valueList ::= valueListNE?
+valueListNE ::= value ("," value)*
+
+rangeList ::= rangePiece (',' rangePiece)*
+rangePiece ::= integer
+             | integer '-' integer
+             | integer integer
+
+
+type    ::=  KeywordString | key| "bit" | "int" | "dag"
+            | "bits" "<" integer ">"
+            | "list" "<" type ">"
+            | classID
+classID ::=  IDENTIFIER
+
+multiClassID ::= // TODO
+
+objectBody      ::=  baseClassList body
+baseClassList   ::=  (":" baseClassListNE)?
+baseClassListNE ::=  subClassRef ("," subClassRef)*
+subClassRef     ::=  (classID | multiClassID) ("<" valueList ">")?
+//defmID          ::= IDENTIFIER
+
+body     ::=  ";" | "{" bodyList "}"
+bodyList ::=  bodyItem*
+bodyItem ::=  declaration ";"
+             | "let" IDENTIFIER [ "{" rangeList "}" ] "=" value ";"
+stmt ::= defStmt | classDecl
+
+includeDirective ::= KeywordInclude STRING
+
+defStmt ::= KeywordDef value? objectBody
