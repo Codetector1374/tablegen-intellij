@@ -49,12 +49,13 @@
     DEC_INT="regexp:[0-9]+"
 
     STRING='regexp:"([^\n\r"]|\\n|\\")*"'
+    CODE_FRAGMENT='regexp:\[\{([^]}]*)}]'
   ]
 }
 
-tableGenFile ::= tbGenStmt*
+tableGenFile ::= object*
 
-private tbGenStmt ::= !<<eof>> stmt | includeDirective
+private object ::= !<<eof>> (classStmt | defStmt | includeDirective) {pin=2}
 
 binInt ::= BIN_INT
 integer ::= binInt | DEC_INT | HEX_INT
@@ -63,16 +64,16 @@ value ::= simpleValue valueSuffix*
 valueSuffix ::=  '{' rangeList '}'
                | '[' rangeList ']'
                | '.' IDENTIFIER
-simpleValue ::= IDENTIFIER
-              | integer
+simpleValue ::= CODE_FRAGMENT
               | STRING
-              // TODO CodeFrag
-              | "?"
-              | "{" valueList "}"
-              | classID "<" valueListNE ">"
-              | "[" valueList "]" ("<" type ">")?
+              | '?'
+              | '{' valueList '}'
+              | classID '<' valueListNE '>'
+              | '[' valueList ']' ("<" type ">")?
               | "(" dagArg dagArgList? ")"
               // TODO BANG Operator
+              | integer
+              | IDENTIFIER
 
 dagArg ::= value (":" VARNAME)? | VARNAME
 dagArgList ::= dagArg ("," dagArg)*
@@ -81,18 +82,22 @@ valueList ::= valueListNE?
 valueListNE ::= value ("," value)*
 
 rangeList ::= rangePiece (',' rangePiece)*
-rangePiece ::= integer
-             | integer '-' integer
+rangePiece ::= integer '-' integer
              | integer integer
+             | integer
 
 
-type    ::=  KeywordString | key| "bit" | "int" | "dag"
-            | "bits" "<" integer ">"
-            | "list" "<" type ">"
+type    ::=  KeywordString | KeywordCode | KeywordBit | KeywordInt
+            | KeywordDag
+            | KeywordBits "<" integer ">"
+            | KeywordList "<" type ">"
             | classID
 classID ::=  IDENTIFIER
-
 multiClassID ::= // TODO
+
+classStmt ::= KeywordClass IDENTIFIER templateArgList? objectBody
+templateArgList ::= "<" declaration ("," declaration)* ">"
+declaration ::= type IDENTIFIER ("=" value)?
 
 objectBody      ::=  baseClassList body
 baseClassList   ::=  (":" baseClassListNE)?
@@ -103,8 +108,8 @@ subClassRef     ::=  (classID | multiClassID) ("<" valueList ">")?
 body     ::=  ";" | "{" bodyList "}"
 bodyList ::=  bodyItem*
 bodyItem ::=  declaration ";"
-             | "let" IDENTIFIER [ "{" rangeList "}" ] "=" value ";"
-stmt ::= defStmt | classDecl
+             | KeywordLet IDENTIFIER [ "{" rangeList "}" ] "=" value ";"
+             | KeywordField declaration ";"
 
 includeDirective ::= KeywordInclude STRING
 
