@@ -55,7 +55,7 @@
 
 tableGenFile ::= object*
 
-private object ::= !<<eof>> (classStmt | defStmt | includeDirective) {pin=2}
+private object ::= !<<eof>> (classStmt | defStmt | includeDirective | letStmt) {pin=3}
 
 binInt ::= BIN_INT
 integer ::= binInt | DEC_INT | HEX_INT
@@ -86,6 +86,10 @@ rangePiece ::= integer '-' integer
              | integer integer
              | integer
 
+letStmt ::= KeywordLet letList KeywordIn "{" object* "}"
+            | KeywordLet letList KeywordIn object
+letList ::= letItem ("," letItem)*
+letItem ::= IDENTIFIER [rangeList] "=" value
 
 type    ::=  KeywordString | KeywordCode | KeywordBit | KeywordInt
             | KeywordDag
