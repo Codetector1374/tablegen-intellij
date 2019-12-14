@@ -39,8 +39,7 @@
     KeywordString="string"
     KeywordInclude="include"
 
-    LINE_COMMENT="regexp://.*"
-    BLOCK_COMMENT="regexp:/\*(.|\n)*\*/"
+    COMMENTS="regexp:(//.*)|(/\*(.|\n)*\*/)"
     IDENTIFIER="regexp:[0-9]*[a-zA-Z_]([a-zA-Z_]|[0-9])*"
     VARNAME="regexp:[$][a-zA-Z_]([a-zA-Z_]|[0-9])*"
 
@@ -55,10 +54,11 @@
 
 tableGenFile ::= object*
 
-private object ::= !<<eof>> (classStmt | defStmt | includeDirective | letStmt) {pin=3}
+private object ::= !<<eof>> (classStmt | defStmt | defmStmt | includeDirective | letStmt) {pin=3}
 
-binInt ::= BIN_INT
-integer ::= binInt | DEC_INT | HEX_INT
+binaryInt ::= BIN_INT
+decimalInteger ::= ["-"] DEC_INT
+integer ::= binaryInt | decimalInteger | HEX_INT
 
 value ::= simpleValue valueSuffix*
 valueSuffix ::=  '{' rangeList '}'
@@ -107,7 +107,7 @@ objectBody      ::=  baseClassList body
 baseClassList   ::=  (":" baseClassListNE)?
 baseClassListNE ::=  subClassRef ("," subClassRef)*
 subClassRef     ::=  (classID | multiClassID) ("<" valueList ">")?
-//defmID          ::= IDENTIFIER
+defmID          ::= IDENTIFIER
 
 body     ::=  ";" | "{" bodyList "}"
 bodyList ::=  bodyItem*
@@ -118,3 +118,5 @@ bodyItem ::=  declaration ";"
 includeDirective ::= KeywordInclude STRING
 
 defStmt ::= KeywordDef value? objectBody
+
+defmStmt ::= KeywordDefm [value] ":" baseClassListNE ";"

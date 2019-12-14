@@ -14,9 +14,12 @@
     -->
 
     <extensions defaultExtensionNs="com.intellij">
-        <fileType name="TableGen File" implementationClass="tablegenintellij.plugin.TableGenFileType"
+        <fileType name="TableGen File" implementationClass="cn.codetector.tablegenintellij.plugin.TableGenFileType"
         fieldName="INSTANCE" language="TableGen" extensions="td"/>
+        <lang.parserDefinition language="TableGen"
+                               implementationClass="cn.codetector.tablegenintellij.TableGenParserDefinition"/>
     </extensions>
+
 
     <actions>
         <!-- Add your actions here -->

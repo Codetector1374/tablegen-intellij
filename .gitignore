@@ -6,7 +6,5 @@ build
 *.ipr
 *.iws
 
-gen/
-
 *.jar
 idea-flex.skeleton

@@ -1,4 +1,4 @@
-package tablegenintellij.plugin
+package cn.codetector.tablegenintellij.plugin
 
 import com.intellij.openapi.util.IconLoader
 import javax.swing.Icon
