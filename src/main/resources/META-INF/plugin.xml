@@ -20,6 +20,8 @@
                                implementationClass="cn.codetector.tablegenintellij.TableGenParserDefinition"/>
         <lang.syntaxHighlighterFactory language="TableGen"
                                        implementationClass="cn.codetector.tablegenintellij.plugin.tablegenlang.TableGenSyntaxHighlighterFactory"/>
+        <lang.commenter language="TableGen"
+                        implementationClass="cn.codetector.tablegenintellij.plugin.tablegenlang.TableGenCommenter"/>
     </extensions>
 
 

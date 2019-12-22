@@ -1,0 +1,21 @@
+{
+  parserClass="cn.codetector.tablegenintellij.llvmbuild.parser.LLVMBuildParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="LLVMBuild"
+  psiImplClassSuffix="Impl"
+  psiPackage="cn.codetector.tablegenintellij.llvmbuild.psi"
+  psiImplPackage="cn.codetector.tablegenintellij.llvmbuild.psi.impl"
+
+  elementTypeHolderClass="cn.codetector.tablegenintellij.llvmbuild.psi.LLVMBuildTypes"
+  elementTypeClass="cn.codetector.tablegenintellij.llvmbuild.psi.LLVMBuildElementType"
+  tokenTypeClass="cn.codetector.tablegenintellij.llvmbuild.psi.LLVMBuildTokenType"
+
+  tokens = [
+    LINE_BREAK="regexp:[\r\n]"
+    WHITE_SPACE="regexp:\s+"
+
+    IDENTIFIER="regexp:[a-zA-Z0-9]+"
+  ]
+}
